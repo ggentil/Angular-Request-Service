@@ -4,9 +4,5 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-    production: false,
-    BASE_API_URL: "https://dev.aecweb.com.br/api/",
-    BASE_URL_AEC: "https://dev.aecweb.com.br/",
-    BASE_IMG_URL: "https://dev.aecweb.com.br/matoutros/img_figuras/",
-    ORIGIN_ID: 3
+    production: false
 };

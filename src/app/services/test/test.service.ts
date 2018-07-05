@@ -10,10 +10,10 @@ export class TestService {
     constructor(private _requestService: RequestService) { }
 
     buscarMateria(idMateria: number){
-        return this._requestService.requestMethod(`news/Get/Full/${idMateria}`, "GET", true);
+        return this._requestService.requestMethod(`news/Get/Full/${idMateria}`, "GET", true, true, null);
     };
 
     inscreverNewsletter(data: Object){
-        return this._requestService.requestMethod("newsletter/api/newsletter", "POST", true, data);
+        return this._requestService.requestMethod("newsletter/api/newsletter", "POST", true, true, null, data);
     };
 }
