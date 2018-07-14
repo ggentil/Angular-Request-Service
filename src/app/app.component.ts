@@ -15,7 +15,11 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         this._testService.buscarMateria(17264)
             .subscribe(res => {
-                console.log('materia res: ', res);
+                if(res.success){
+                    console.log('materia res: ', res);
+                }else{
+                    console.log('materia error res: ', res);
+                }
             }, error => {
                 console.log('materia error: ', error);
             });

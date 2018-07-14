@@ -15,7 +15,7 @@ export class RequestService {
 
     constructor(private _http: HttpClient) { }
 
-    requestMethod(requestURL: string, method: string, itsInternal: boolean, data?: any) {
+    requestMethod(requestURL: string, method: string, itsInternal: boolean, data?: any): any {
         this.internalRequest = itsInternal;
 
         let header = {"Content-Type": "application/json"};
