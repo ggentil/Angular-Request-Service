@@ -10,20 +10,23 @@ export class RequestService {
 
     //you can use enviroment variables here, like this:
     //private BASE_API_URL: string = environment.BASE_API_URL;
-    private BASE_API_URL: string = "https://myapi.address/";
+    //private BASE_API_URL: string = "https://myapi.address/";
+    private BASE_API_URL: string = "https://dev.aecweb.com.br/api/";
 
     private standardizeResponse: boolean = false;
 
     constructor(private _http: HttpClient) { }
 
-    requestMethod(requestURL: string, method: string, standardizeResponse: boolean, itsInternal: boolean, additionalHeaders: Object, data?: any) {
+    requestMethod(requestURL: string, method: string, standardizeResponse: boolean, itsInternal: boolean, additionalHeaders: Object, data?: any): any {
         this.standardizeResponse = standardizeResponse;
 
         let header = itsInternal ? 
             //Internal default header
-            {"Content-Type": "application/json"}:
+            {}:
             //External default header
-            {"Content-Type": "application/json"};
+            {};
+
+        header = null;
 
         if(additionalHeaders)
             header = Object.assign(header, additionalHeaders);
@@ -36,19 +39,30 @@ export class RequestService {
             //observe: "response"
         };
 
-        switch (method.toUpperCase()) {
-            case "POST" && data:
-                return this.throughPost(url, JSON.stringify(data), option);    
-            case "PUT" && data:
-                return this.throughPut(url, JSON.stringify(data), option);
-            case "DELETE":
-                return this.throughDelete(url, option);
-            case "GET":
-                return this.throughGet(url, option);
-            default:
-                console.error('ARS error: you must define a method!');
+        console.log("request s: ", data);
+
+        method = method.toLocaleUpperCase();
+        if(method == "POST" && data) {
+            return this.throughPost(url, this.verifyInstanceFile ? JSON.stringify(data) : data, option);
+        } else if(method == "PUT" && data) {
+            return this.throughPut(url, this.verifyInstanceFile ? JSON.stringify(data) : data, option);
+        } else if(method == "DELETE") {
+            return this.throughDelete(url, option);
+        } else if(method == "GET") {
+            return this.throughGet(url, option);
+        } else {
+            return this.throwStandardErrorResponse("ARS error: you must define a method!");
         }
-    }
+
+    };
+
+    private throwStandardErrorResponse(message: string) {
+        return {
+            success: false,
+            message: message,
+            data: null
+        };
+    };
 
     private throwStandardSuccessResponse(data: any) {
         //set your default return schema here:
@@ -58,33 +72,37 @@ export class RequestService {
             message: null,
             data: data
         };
-    }
+    };
 
-    private throughPost(url: string, data: string, option?: any) {
+    private throughPost(url: string, data: any, option?: any) {
         return this._http.post(url, data, option)
             .pipe(map(response => {
                 return this.standardizeResponse ? this.throwStandardSuccessResponse(response) : response;
             }));
-    }
+    };
 
     private throughPut(url: string, data: string, option?: any) {
         return this._http.put(url, data, option)
             .pipe(map(response => {
                 return this.standardizeResponse ? this.throwStandardSuccessResponse(response) : response;
             }));
-    }
+    };
 
     private throughDelete(url: string, option?: any) {
         return this._http.delete(url, option)
             .pipe(map(response => {
                 return this.standardizeResponse ? this.throwStandardSuccessResponse(response) : response;
             }));
-    }
+    };
 
     private throughGet(url: string, option?: any) {
         return this._http.get(url, option)
             .pipe(map(response => {
                 return this.standardizeResponse ? this.throwStandardSuccessResponse(response) : response;
             }));
+    };
+
+    private verifyInstanceFile(data: any): boolean {
+        return data instanceof File || data instanceof FormData ? true : false;
     }
 }

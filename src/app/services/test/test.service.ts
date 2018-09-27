@@ -16,4 +16,8 @@ export class TestService {
     inscreverNewsletter(data: Object){
         return this._requestService.requestMethod("newsletter/api/newsletter", "POST", true, true, null, data);
     };
+
+    fileUpload(file: FormData) {
+        return this._requestService.requestMethod("filesystem/upload/file", "POST", true, true, null, file);
+    }
 }
